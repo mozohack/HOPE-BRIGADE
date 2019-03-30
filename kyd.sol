@@ -41,6 +41,8 @@ contract knowYourDrug
          })
         );
         drugAccounts[_drugId]=true;
+         drugAccounts[_drugId]=false;
+        
         
     }
     
