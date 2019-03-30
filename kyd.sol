@@ -3,20 +3,71 @@ contract knowYourDrug
 {
     string public manufacturerName="emcure";
     address public manufacturerAddress;
+    uint32 public currentAccessor;
+    uint32 public currentDrugAccessed;
+    bool public exception;
+    bool public drugException;
     constructor() public
     {
         manufacturerAddress=msg.sender;
     }
+  
+     struct partOfSupplyChain
+    {
+        string corresName;
+        //string designationInChain;
+        uint32 recogId;
+       // bool isManufacturer;
+        bool isWarehouse;
+        bool isSupplier; 
+        bool isSubSupplier;
+       // bool isSubSupplier;
+        bool isRetailer;
+    }
+    mapping (uint32 => bool) accounts;
+    partOfSupplyChain[] public supplyChainParts;
+    
+    function updateSupplyChainDetails(string memory _name, uint32 _id,bool _isWarehouse,bool _isSupplier,bool _isSubSupplier,bool _isretailer) public
+    {
+        //require(msg.sender==Manager);
+        supplyChainParts.push(partOfSupplyChain({
+            corresName: _name,
+            //designationInChain: _designation,
+            recogId: _id,
+            isWarehouse: _isWarehouse,
+            isSupplier: _isSupplier,
+            isSubSupplier: _isSubSupplier,
+            isRetailer: _isretailer
+        }));
+        accounts[_id]=true;
+    }
+    
+    function toSignIn(uint32 _id) public returns (string memory,string memory,uint32,bool) 
+    {
+    
+        if(accounts[_id]==true){
+            for(uint32 index=0;index<supplyChainParts.length;index++)
+            {
+                if(supplyChainParts[index].recogId==_id)
+                {
+                    currentAccessor = index;
+                   // return(supplyChainParts[index].corresName,supplyChainParts[index].designationInChain,supplyChainParts[index].recogId,supplyChainParts[index].isManufacturer);
+                }
+            }
+        }
+    }
+  
     struct DrugDetails
     {
         string drugName;
-        string manufacturedBy;
+        //string manufacturedBy;
         string drugId;
         uint32 serialNumberFrom;
         uint32 serialNumberTo;
       //  uint32[] pathOfDrug;
         string manufactureDate;
         string expiryDate;
+       // uint32[] pathOfDrug;
         bool isFromAuthorisedSource;
     }
     DrugDetails[] public drugsInNetwork;
@@ -28,22 +79,41 @@ contract knowYourDrug
        // tempPath[0] = supplyChainParts[currentAccessor].recogId;
         drugsInNetwork.push(DrugDetails({
             drugName: _drugName,
-            manufacturedBy: manufacturerName,
+            //manufacturedBy: manufacturerName,
             drugId: _drugId,
             serialNumberFrom: _serialNumberFrom,
             serialNumberTo: _serialNumberTo,
            // pathOfDrug:tempPath,
+         // pathOfDrug[pathTraceIndex]:supplyChainParts[currentAccessor].recogId,//
+         
+         
+         /*   function updatePath(uint32 supplyChainParts[currentAccessor].recogId) public
+            {
+         
+            pathOfDrug.push(supplyChainParts[currentAccessor].recogId)
             
-           // pathOfDrug[pathTraceIndex]:supplyChainParts[currentAccessor].recogId,//
+            }
+            
+         */   
+            
             manufactureDate: _manufactureDate,
             expiryDate: _expiryDate,
             isFromAuthorisedSource: true
          })
         );
         drugAccounts[_drugId]=true;
-         drugAccounts[_drugId]=false;
-        
         
     }
     
-}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+ }
