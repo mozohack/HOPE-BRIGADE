@@ -39,6 +39,7 @@ class Home extends Component {
           </center>
         </div>
       </div>
+      <div></div>
     );
   }
 }
