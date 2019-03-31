@@ -182,17 +182,55 @@ contract knowYourDrug
             
             //drugsInNetwork[currentDrugAccessed].pathOfDrug = tempPath;
         }
-        
-        
+      }
+       struct Retailer
+    {
+        uint32 recogId;
+        string drugId;
+        uint32 havingSerialNumberFrom;
+        uint32 havingSerialNumberTo;
+        string checkInDate;
+        string checkOutDate;
     }
+    Retailer[] public Retailers;
     
-    
-    
-    
-    
-    
-    
-    
+    function retailerUpdateDrugs(uint32 _retailerID,string memory _drugId,uint32 _serialNumberFrom,uint32 _serialNumberTo, string memory _checkInDate, string memory _checkOutDate) public
+    {
+        require(drugAccounts[_drugId]);
+        require(accounts[_retailerID]);
+        require(supplyChainParts[currentAccessor].isManufacturer==false);
+        
+       for(uint32 index=0;index<drugsInNetwork.length;index++)
+        {
+            string memory t = drugsInNetwork[index].drugId;
+            if(keccak256(bytes(t))==keccak256(bytes(_drugId)))
+            {
+                currentDrugAccessed=index;
+                break;
+            }
+            else
+            {
+                drugException=true;
+                break;
+            }
+        }
+        if(drugException==false){
+           // uint32[] memory tempPath;
+           // tempPath[0] = supplyChainParts[currentAccessor].recogId;
+            
+            Retailers.push(Retailer({
+                recogId:supplyChainParts[currentAccessor].recogId,
+                drugId:_drugId,
+                havingSerialNumberFrom:_serialNumberFrom,
+                havingSerialNumberTo:_serialNumberTo,
+                checkInDate:_checkInDate,
+                checkOutDate:_checkOutDate
+            //have to include his recogId in the pathOfDrug of the drug
+            }));
+            
+            //drugsInNetwork[currentDrugAccessed].pathOfDrug = tempPath;
+        }
+        }
     
     
  }
